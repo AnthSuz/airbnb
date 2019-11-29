@@ -15,7 +15,7 @@ export default function HomeScreen() {
     const fetchData = async () => {
       try {
         const responses = await axios.get(
-          "https://airbnb-api.now.sh/api/room?city=paris"
+          "https://airbnb-api.herokuapp.com/api/room?city=paris"
         );
 
         if (responses.data.rooms) {
@@ -92,6 +92,7 @@ export default function HomeScreen() {
 
                     <Text style={styles.priceAd}>{item.price} €</Text>
                   </View>
+
                   <View style={styles.descriptionRoom}>
                     <View
                       style={{

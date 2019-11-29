@@ -12,8 +12,8 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { startAsync } from "expo/build/AR";
 import MapView from "react-native-maps";
+import Swiper from "react-native-swiper";
 
 export default function RoomScreen() {
   const { params } = useRoute();
@@ -28,7 +28,7 @@ export default function RoomScreen() {
     const fetchData = async () => {
       try {
         const responses = await axios.get(
-          "https://airbnb-api.now.sh/api/room/" + params.adId
+          "https://airbnb-api.herokuapp.com/api/room/" + params.adId
         );
         if (responses.data) {
           setRoom(responses.data);
@@ -70,6 +70,21 @@ export default function RoomScreen() {
     return array;
   };
 
+  const arrayPhoto = () => {
+    let arrayPictures = [];
+    for (let i = 0; i < room.photos.length; i++) {
+      arrayPictures.push(
+        <Image
+          key={i}
+          source={{ uri: room.photos[i] }}
+          style={{ height: 300, resizeMode: "cover" }}
+        />
+      );
+    }
+    return arrayPictures;
+  };
+
+  //  -----------------------------------
   return (
     <>
       {isLoading === true ? (
@@ -81,12 +96,36 @@ export default function RoomScreen() {
       ) : (
         <ScrollView>
           <View style={{ position: "relative" }}>
-            <Image
-              source={{ uri: room.photos[0] }}
-              style={{ height: 300, resizeMode: "cover" }}
-            />
+            <Swiper
+              style={styles.wrapper}
+              showsButtons={true}
+              showsPagination={false}
+              nextButton={
+                <Ionicons
+                  name={
+                    Platform.OS === "ios"
+                      ? "ios-arrow-forward"
+                      : "md-arrow-forward"
+                  }
+                  color="#FF5B60"
+                  size={30}
+                />
+              }
+              prevButton={
+                <Ionicons
+                  name={
+                    Platform.OS === "ios" ? "ios-arrow-back" : "md-arrow-back"
+                  }
+                  color="#FF5B60"
+                  size={30}
+                />
+              }
+            >
+              {arrayPhoto()}
+            </Swiper>
             <Text style={styles.priceAd}>{room.price} €</Text>
           </View>
+
           <View
             style={{
               flexDirection: "row",
@@ -124,7 +163,7 @@ export default function RoomScreen() {
               <Text
                 style={{
                   fontSize: 20,
-                  paddingTop: 10,
+                  paddingTop: 20,
                   lineHeight: 30,
                   paddingHorizontal: 10
                 }}
@@ -133,7 +172,7 @@ export default function RoomScreen() {
                 {room.description}
               </Text>
             ) : (
-              <Text style={{ fontSize: 20, paddingTop: 10, lineHeight: 30 }}>
+              <Text style={{ fontSize: 20, paddingTop: 20, lineHeight: 30 }}>
                 {room.description}
               </Text>
             )}
@@ -163,13 +202,16 @@ export default function RoomScreen() {
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    height: 200
+  },
   priceAd: {
     position: "absolute",
-    bottom: 20,
+    bottom: 10,
     backgroundColor: "black",
     color: "white",
     textAlign: "center",
-    lineHeight: 80,
+    lineHeight: 70,
     width: 100,
     fontSize: 30
   },

@@ -8,11 +8,13 @@ import {
   KeyboardAvoidingView
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { useNavigation } from "@react-navigation/core";
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 
-export default function SignInScreen({ setToken }) {
+export default function SignInScreen({ setToken, setId }) {
+  const navigation = useNavigation();
   const [email, setEmail] = useState("arno@airbnb-api.com");
   const [password, setPassword] = useState("password01");
   const [errorMessage, setErrorMessage] = useState({
@@ -38,7 +40,7 @@ export default function SignInScreen({ setToken }) {
       // -------
 
       const response = await axios.post(
-        "https://airbnb-api.now.sh/api/user/log_in",
+        "https://airbnb-api.herokuapp.com/api/user/log_in",
         {
           email: email,
           password: password
@@ -49,6 +51,7 @@ export default function SignInScreen({ setToken }) {
       console.log(token);
 
       setToken(token);
+      setId(response.data._id);
     } catch (error) {
       console.log("catch here");
       console.log(error.message);
@@ -116,6 +119,26 @@ export default function SignInScreen({ setToken }) {
           >
             <Text style={styles.button}>Login</Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              // justifyContent: "center",
+              // alignItems: "center",
+              paddingTop: 30
+            }}
+            onPress={() => {
+              navigation.navigate("SignUp");
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 20,
+                textAlign: "center",
+                color: "white"
+              }}
+            >
+              Sign Up
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </KeyboardAvoidingView>
@@ -135,7 +158,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 50,
     marginBottom: 30,
     paddingLeft: 20,
-    paddingBottom: 10
+    paddingBottom: 10,
+    color: "white"
   },
   welcome: {
     color: "white",
@@ -145,10 +169,10 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "white",
-    borderRadius: 30,
+    borderRadius: 25,
     overflow: "hidden",
     width: 130,
-    lineHeight: 60,
+    lineHeight: 50,
     fontSize: 25,
     color: "#FF5B60",
     fontWeight: "300",
